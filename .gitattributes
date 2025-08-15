@@ -1,0 +1,7 @@
+*.md linguist-language=Markdown
+*.md linguist-detectable=true
+*.md linguist-documentation=false
+
+*.pyhtml linguist-language=PyHTML
+*.pyhtml linguist-detectable=true
+*.pyhtml linguist-documentation=false
