@@ -5,11 +5,13 @@ IP = socket.gethostbyname(socket.gethostname())
 
 HTML = {ord('ü'): '&uuml;',ord('Ü'): '&Uuml;',ord('ä'): '&auml;',ord('Ä'): '&Auml;',ord('ö'): '&ouml;',ord('Ö'): '&Ouml;',ord('ß') :'&szlig;'}
 
+__version__ = "1.0.0"
+
 FORMULAR = """
 <html>
     <head>
         <title>Formular</title>
-        <link rel="stylesheet" href="https://lkunited.pythonanywhere.com/static/style.css"/>
+        <link rel="stylesheet" href="https://buero-os-toolkit-development.github.io/LKWEB-Backend/styling/style.css"/>
         <meta name="author" content="Leander Kafemann"/>
     </head>
     <body>
