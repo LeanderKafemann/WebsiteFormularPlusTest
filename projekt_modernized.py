@@ -1,64 +1,21 @@
-import socket, cgi
+from PyWSGIRef import *
 
-SERVER = False ##Bei True: Rechner fungiert als Server -> von anderen lokalen Geräten erreichbar
-IP = socket.gethostbyname(socket.gethostname())
+from strings import *
 
-HTML = {ord('ü'): '&uuml;',ord('Ü'): '&Uuml;',ord('ä'): '&auml;',ord('Ä'): '&Auml;',ord('ö'): '&ouml;',ord('Ö'): '&Ouml;',ord('ß') :'&szlig;'}
+__version__ = "1.0.0"
 
-FORMULAR = """
-<html>
-    <head>
-        <title>Formular</title>
-        <link rel="stylesheet" href="https://lkunited.pythonanywhere.com/static/style.css"/>
-        <meta name="author" content="Leander Kafemann"/>
-    </head>
-    <body>
-        <div class="centerer">
-            <div class="login_box">
-                <div class="clearfix">
-                    <h2>Formular</h2>
-                    <form method="post" action="http://localhost:8000/eval?count={}">
-                        <input type="text" name="name" placeholder="Nutzername"/><br/>
-                        {}<br/>
-                        <label for="x1"><a href="http://localhost:8000/form?count={}#focussed">Eingabefeld hinzufügen</a></label><br/>
-                        <input type="password" name="code" placeholder="Passwort"/><br/>
-                        <input type="submit" class="login_button" value="Absenden"/>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </body>
-</html>
-"""
-F_INSERT = """<input type="text" name="x{}" placeholder="Weitere Eingabe {}"/>"""
-F_INSERT_FOCUSSED = """<input type="text" name="x{}" placeholder="Weitere Eingabe {}" id="focussed"/>"""
+for i in ["evaluate", "formular"]:
+    addSchablone(i, loadFromFile("./templates/{}.pyhtml".format(i)))
 
-EVALUATE = """
-<html>
-    <head>
-        <title>Formular</title>
-        <link rel="stylesheet" href="https://lkunited.pythonanywhere.com/static/style.css"/>
-        <meta name="author" content="Leander Kafemann"/>
-    </head>
-    <body>
-        <div class="centerer">
-            <div class="login_box">
-                <div class="clearfix">
-                    <h3>
-                        {}
-                    </h3>
-                </div>
-            </div>
-        </div>
-    </body>
-</html>"""
-EVALUATE_INSERT = """Vielen Dank für die Teilnahme.<br/>Eingaben:<br/><br/>{}"""
-EVALUATE_INSERT_ERROR = """<font color="red">Ein Fehler ist aufgetreten.</font>"""
+# quick-access
+FORMULAR = SCHABLONEN["formular"].decoded()
+EVALUATE = SCHABLONEN["evaluate"].decoded()
 
-def get_form(env):
-    form = cgi.FieldStorage(fp=env.get("wsgi.input"), environ=env, keep_blank_values=True)
+def get_form(form: FieldStorage):
     try:
-        count = int(form.getvalue("count"))
+        c = form.getvalue("count")
+        print(c)
+        count = int(c) if c != None else 0
         if count < 0:
             raise ValueError()
         elif count == 0:
@@ -74,8 +31,7 @@ def get_form(env):
     except:
         return EVALUATE.format(EVALUATE_INSERT_ERROR.format("Fehler beim Zählen der Felder."))
 
-def evaluate_form(env):
-    form = cgi.FieldStorage(fp=env.get("wsgi.input"), environ=env, keep_blank_values=True)
+def evaluate_form(form: FieldStorage):
     try:
         format_str = ""
         format_str += form.getvalue("name")+"; "
@@ -86,30 +42,20 @@ def evaluate_form(env):
     except:
         return EVALUATE.format(EVALUATE_INSERT_ERROR.format("Fehler."))
 
-def application(environ, start_response):
-    global logged, actname
-    status = "200 OK"
-    match environ["PATH_INFO"]:
+def application(path: str, fs: FieldStorage):
+    match path:
         case "/form":
-            content = get_form(environ)
+            return get_form(fs)
         case "/eval":
-            content = evaluate_form(environ)
+            return evaluate_form(fs)
+        case "/version":
+            return __version__
         case "/help":
-            content = """<html><body>Diese Seite existiert nur zu Testzwecken.<br/>Sie finden das Formular unter <a href="http://localhost:8000/form?count=0">dieser</a> Adresse.</body></html>"""
+            return ONLY_TEST
         case _:
-            status = "404 NOT FOUND"
-            content = """<html><body>Seite nicht gefunden. Kontaktieren Sie einen Admin!<br/><a href="http://localhost:8000/help">Hilfe</a></body></html>"""
-    response_headers = [("Content-Type", "text/html"),\
-                        ("Content-Lenght", str(len(content)))]
-    start_response(status, response_headers)
-    if SERVER:
-        content = content.replace("localhost", IP)
-    content = content.translate(HTML)
-    return [content.encode("utf8")]
+            return NOT_FOUND
+app = makeApplicationObject(application, True)
 
 if __name__ == "__main__":
-    from wsgiref.simple_server import make_server
-    port = 8000
-    httpd = make_server("", port, application)
-    print(f"Serving on port {port}...")
-    httpd.serve_forever()
+    server = setUpServer(app)
+    server.serve_forever()
