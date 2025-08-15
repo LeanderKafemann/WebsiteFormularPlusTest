@@ -3,6 +3,7 @@
         <title>Formular</title>
         <link rel="stylesheet" href="https://buero-os-toolkit-development.github.io/LKWEB-Backend/styling/style.css"/>
         <meta name="author" content="Leander Kafemann"/>
+        <meta charset="UTF-8"/>
     </head>
     <body>
         <div class="centerer">
