@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title>Formular</title>
+        <link rel="stylesheet" href="https://buero-os-toolkit-development.github.io/LKWEB-Backend/styling/style.css"/>
+        <meta name="author" content="Leander Kafemann"/>
+    </head>
+    <body>
+        <div class="centerer">
+            <div class="login_box">
+                <div class="clearfix">
+                    <h3>
+                        {}
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

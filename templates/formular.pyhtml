@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <title>Formular</title>
+        <link rel="stylesheet" href="https://buero-os-toolkit-development.github.io/LKWEB-Backend/styling/style.css"/>
+        <meta name="author" content="Leander Kafemann"/>
+    </head>
+    <body>
+        <div class="centerer">
+            <div class="login_box">
+                <div class="clearfix">
+                    <h2>Formular</h2>
+                    <form method="post" action="http://localhost:8000/eval?count={}">
+                        <input type="text" name="name" placeholder="Nutzername"/><br/>
+                        {}<br/>
+                        <label for="x1"><a href="http://localhost:8000/form?count={}#focussed">Eingabefeld hinzufügen</a></label><br/>
+                        <input type="password" name="code" placeholder="Passwort"/><br/>
+                        <input type="submit" class="login_button" value="Absenden"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
