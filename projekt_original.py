@@ -60,7 +60,8 @@ EVALUATE_INSERT_ERROR = """<font color="red">Ein Fehler ist aufgetreten.</font>"
 def get_form(env):
     form = cgi.FieldStorage(fp=env.get("wsgi.input"), environ=env, keep_blank_values=True)
     try:
-        count = int(form.getvalue("count"))
+        c = form.getvalue("count")
+        count = int(c) if c != None else 0
         if count < 0:
             raise ValueError()
         elif count == 0:
